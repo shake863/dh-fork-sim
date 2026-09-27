@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>速降前叉压缩原理 · 交互演示</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<style>
+:root{
+  --font-sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --surface-0:#f5f4ef;--surface-1:#efeee8;--surface-2:#ffffff;
+  --text-primary:#1f1e1c;--text-secondary:#5f5e5a;--text-muted:#8a8984;
+  --text-accent:#185FA5;--text-danger:#A32D2D;--text-success:#3B6D11;--text-warning:#854F0B;
+  --bg-accent:#E6F1FB;--border:rgba(0,0,0,.12);--border-strong:rgba(0,0,0,.22);--border-accent:#85B7EB;
+  --radius:8px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --surface-0:#1c1c1b;--surface-1:#262624;--surface-2:#2b2b29;
+    --text-primary:#f1efe8;--text-secondary:#b4b2a9;--text-muted:#888780;
+    --text-accent:#85B7EB;--text-danger:#F09595;--text-success:#97C459;--text-warning:#EF9F27;
+    --bg-accent:#0C447C;--border:rgba(255,255,255,.12);--border-strong:rgba(255,255,255,.22);--border-accent:#378ADD;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface-0);color:var(--text-primary);font-family:var(--font-sans);font-size:16px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding:24px 20px 48px}
+h1{font-size:22px;font-weight:500;margin:0 0 4px}
+.sub{font-size:14px;color:var(--text-secondary);margin:0 0 12px}
+button{font:inherit;font-size:14px;color:var(--text-primary);background:transparent;border:0.5px solid var(--border-strong);border-radius:var(--radius);padding:6px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+button:hover{background:var(--surface-1)}
+button:active{transform:scale(.98)}
+input[type=range]{accent-color:#378ADD}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sc button[aria-pressed="true"]{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
+.rl{font-size:13px;color:var(--text-secondary);min-width:30px}
+.m{background:var(--surface-1);border-radius:var(--radius);padding:8px 8px}
+.m .l{font-size:12px;color:var(--text-secondary);white-space:nowrap}
+.m .v{font-size:15px;font-weight:500;white-space:nowrap}
+.sl{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-secondary)}
+.sl span{min-width:100px}
+.sl input{flex:1;min-width:0}
+.sl b{font-weight:500;color:var(--text-primary);min-width:48px;text-align:right}
+.lg{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--text-secondary);margin-right:8px}
+.lg i{display:inline-block;width:10px;height:10px;border-radius:2px}
+#fork{touch-action:none;cursor:ns-resize;display:block}
+.main{display:grid;grid-template-columns:210px minmax(0,1fr);gap:16px;align-items:start}
+.g2c{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 24px}
+.mets{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:8px}
+.foot{font-size:12px;color:var(--text-muted);margin-top:24px;line-height:1.6}
+@media (max-width:640px){
+  .main{grid-template-columns:1fr}
+  #fork{margin:0 auto}
+  .g2c{grid-template-columns:1fr}
+  .mets{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>速降前叉压缩原理 · 交互演示</h1>
+<p class="sub">空气弹簧、容积垫片、高低速压缩与回弹，正置与倒置结构，Fox GRIP 与 GRIP2 阻尼对比。</p>
+<h2 class="sr-only">速降自行车前叉压缩原理交互演示，可切换正置与倒置结构、Fox GRIP 与 GRIP2 阻尼，观察行程、弹簧力曲线和阻尼力曲线。</h2>
+<div class="sc" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0.5rem 0 6px">
+<span class="rl">结构</span>
+<button data-m="n" aria-pressed="true">正置前叉</button>
+<button data-m="i" aria-pressed="false">倒置前叉 USD</button>
+<label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary);margin-left:8px"><input type="checkbox" id="hl"> 标出簧下部分 <i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#639922"></i></label>
+</div>
+<div class="sc" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 6px">
+<span class="rl">阻尼</span>
+<button data-d="g1" aria-pressed="false">Fox GRIP（2 旋钮）</button>
+<button data-d="g2" aria-pressed="true">Fox GRIP2（4 旋钮）</button>
+</div>
+<div class="sc" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 0.5rem">
+<span class="rl">地形</span>
+<button data-s="idle" aria-pressed="true"><i class="ti ti-hand-finger" aria-hidden="true"></i> 手动按压</button>
+<button data-s="rocks" aria-pressed="false">碎石路</button>
+<button data-s="edge" aria-pressed="false">方边冲击</button>
+<button data-s="drop" aria-pressed="false">落差落地</button>
+<button data-s="brake" aria-pressed="false">急刹点头</button>
+<span style="flex:1"></span>
+<button id="spd"><i class="ti ti-clock" aria-hidden="true"></i> 慢放 0.25x</button>
+</div>
+<p id="hint" style="font-size:13px;color:var(--text-secondary);margin:0 0 12px;line-height:1.6;min-height:42px"></p>
+<div class="main">
+<div>
+<svg id="fork" viewBox="0 0 240 470" width="210" role="img" aria-label="前叉剖面示意，可拖动压缩">
+<g id="upA">
+<rect x="42" y="37" width="36" height="260" rx="3" fill="none" style="stroke:var(--text-secondary)" stroke-width="1.2"/>
+<rect x="162" y="37" width="36" height="260" rx="3" fill="none" style="stroke:var(--text-secondary)" stroke-width="1.2"/>
+</g>
+<g id="fixI" display="none">
+<rect class="us" data-op="0.12" x="42" y="272" width="36" height="170" rx="3" fill="#888780" fill-opacity="0.12" style="stroke:var(--text-secondary)" stroke-width="1.2"/>
+<rect class="us" data-op="0.12" x="162" y="272" width="36" height="170" rx="3" fill="#888780" fill-opacity="0.12" style="stroke:var(--text-secondary)" stroke-width="1.2"/>
+<rect class="us" data-op="0.5" x="38" y="436" width="44" height="22" rx="6" fill="#888780" fill-opacity="0.5"/>
+<rect class="us" data-op="0.5" x="158" y="436" width="44" height="22" rx="6" fill="#888780" fill-opacity="0.5"/>
+</g>
+<g id="upC">
+<rect x="106" y="0" width="28" height="15" fill="#888780" fill-opacity="0.5"/>
+<rect x="24" y="15" width="192" height="22" rx="6" fill="#888780" fill-opacity="0.55"/>
+<g id="tk"></g>
+<rect x="166" y="40" width="28" height="11" rx="4" fill="#888780" fill-opacity="0.35"/>
+<rect x="166" y="63" width="28" height="229" fill="#EF9F27" fill-opacity="0.22"/>
+<rect x="166" y="55" width="28" height="8" fill="#888780"/>
+<path id="shim" d="M167 53 Q173 53 180 53 Q187 53 193 53" fill="none" style="stroke:var(--text-primary)" stroke-width="2"/>
+<path id="lsc" d="M180 72 L180 57 M176 61 L180 56 L184 61" fill="none" stroke="#1D9E75" stroke-width="2"/>
+<path id="hsc" d="M169 72 L169 47 M166 51 L169 46 L172 51 M191 72 L191 47 M188 51 L191 46 L194 51" fill="none" stroke="#D85A30" stroke-width="2"/>
+</g>
+<rect id="pos" x="44" y="80" width="32" height="197" fill="#378ADD" fill-opacity="0.3"/>
+<rect id="neg" x="44" y="284" width="32" height="13" fill="#85B7EB" fill-opacity="0.35"/>
+<rect x="44" y="277" width="32" height="7" fill="#5F5E5A"/>
+<line x1="60" y1="284" x2="60" y2="446" style="stroke:var(--text-secondary)" stroke-width="3"/>
+<rect x="167" y="285" width="26" height="7" fill="#5F5E5A"/>
+<line x1="180" y1="292" x2="180" y2="446" style="stroke:var(--text-secondary)" stroke-width="3"/>
+<path id="rb" d="M171 270 L171 302 M168 297 L171 303 L174 297 M189 270 L189 302 M186 297 L189 303 L192 297" fill="none" stroke="#D4537E" stroke-width="2"/>
+<g id="fixN">
+<rect class="us" data-op="0.18" x="36" y="250" width="48" height="205" rx="8" fill="#888780" fill-opacity="0.18" style="stroke:var(--text-secondary)" stroke-width="1.2"/>
+<rect class="us" data-op="0.18" x="156" y="250" width="48" height="205" rx="8" fill="#888780" fill-opacity="0.18" style="stroke:var(--text-secondary)" stroke-width="1.2"/>
+<path class="us" d="M84 272 Q120 230 156 272" fill="none" stroke="#888780" stroke-width="8" stroke-linecap="round"/>
+</g>
+<g id="upI" display="none">
+<rect x="36" y="37" width="48" height="260" rx="6" fill="#888780" fill-opacity="0.16" style="stroke:var(--text-secondary)" stroke-width="1.2"/>
+<rect x="156" y="37" width="48" height="260" rx="6" fill="#888780" fill-opacity="0.16" style="stroke:var(--text-secondary)" stroke-width="1.2"/>
+</g>
+<rect class="us" data-op="1" x="60" y="446" width="120" height="6" rx="3" fill="#888780"/>
+<circle cx="120" cy="449" r="13" fill="none" style="stroke:var(--text-secondary)" stroke-width="2"/>
+</svg>
+<div style="margin-top:6px;line-height:1.8">
+<span class="lg"><i style="background:#378ADD"></i>正气室</span><span class="lg"><i style="background:#85B7EB"></i>负气室</span><span class="lg"><i style="background:#7F77DD"></i>容积垫片</span><span class="lg"><i style="background:#EF9F27"></i>阻尼油</span><br>
+<span class="lg"><i style="background:#1D9E75"></i>低速压缩</span><span class="lg"><i style="background:#D85A30"></i>高速压缩垫片</span><span class="lg"><i style="background:#D4537E"></i>回弹</span>
+</div>
+<p id="snote" style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin:8px 0 0"></p>
+</div>
+<div id="charts" style="min-width:0">
+<div class="mets">
+<div class="m"><div class="l">行程</div><div class="v" id="mX">0 mm</div></div>
+<div class="m"><div class="l">正气室</div><div class="v" id="mP">0 psi</div></div>
+<div class="m"><div class="l">轴速</div><div class="v" id="mV">0 m/s</div></div>
+<div class="m"><div class="l">峰值冲击力</div><div class="v" id="mF">0 N</div></div>
+<div class="m"><div class="l">最大 / 触底</div><div class="v" id="mMax">0 mm</div></div>
+</div>
+<div style="display:flex;align-items:center;gap:8px;margin:4px 0 8px;font-size:13px;color:var(--text-secondary)">当前起作用的<span id="cdot" style="width:10px;height:10px;border-radius:50%;background:#888780;display:inline-block;flex:none"></span><span id="circ" style="font-size:15px;font-weight:500;color:var(--text-primary)">静止</span></div>
+<canvas id="cSp" style="width:100%;height:145px;display:block"></canvas>
+<canvas id="cDa" style="width:100%;height:150px;display:block;margin-top:6px"></canvas>
+<canvas id="cTr" style="width:100%;height:110px;display:block;margin-top:6px"></canvas>
+</div>
+</div>
+<div class="g2c" style="margin-top:1rem">
+<label class="sl"><span>车手体重</span><input type="range" id="s-w" min="50" max="110" step="1"><b id="o-w"></b></label>
+<label class="sl"><span>正气室气压</span><input type="range" id="s-psi" min="60" max="150" step="1"><b id="o-psi"></b></label>
+<label class="sl"><span>容积垫片</span><input type="range" id="s-tok" min="0" max="4" step="1"><b id="o-tok"></b></label>
+</div>
+<p id="dnote" style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin:14px 0 8px"></p>
+<div id="g2box" class="g2c">
+<label class="sl"><span>LSC 低速压缩</span><input type="range" id="s-lsc" min="0" max="18" step="1"><b id="o-lsc"></b></label>
+<label class="sl"><span>HSC 高速压缩</span><input type="range" id="s-hsc" min="0" max="8" step="1"><b id="o-hsc"></b></label>
+<label class="sl"><span>LSR 低速回弹</span><input type="range" id="s-lsr" min="0" max="18" step="1"><b id="o-lsr"></b></label>
+<label class="sl"><span>HSR 高速回弹</span><input type="range" id="s-hsr" min="0" max="8" step="1"><b id="o-hsr"></b></label>
+</div>
+<div id="g1box" class="g2c" style="display:none">
+<label class="sl"><span>压缩（单旋钮）</span><input type="range" id="s-c1" min="0" max="10" step="1"><b id="o-c1"></b></label>
+<label class="sl"><span>回弹（单旋钮）</span><input type="range" id="s-r1" min="0" max="10" step="1"><b id="o-r1"></b></label>
+</div>
+<p style="font-size:13px;color:var(--text-secondary);margin:12px 0 0">静态下沉 sag：<span id="sag" style="font-weight:500"></span></p>
+<p class="foot">简化物理模型：单一簧上质量、无质量车轮、多变指数空气弹簧、分段线性阻尼。数值只用来说明趋势，不对应任何具体品牌型号的实测数据；实际调车请以厂家说明书和调校表为准。旋钮刻度方向为“越大越硬”，真车通常从全关位置往回数。</p>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const A=8.04e-4,PSI=6895,G=1.25,g=9.81,TR=0.2,H=0.7,PX=0.75,TK=25;
+const P={w:80,psi:100,tok:2,lsc:9,hsc:4,lsr:9,hsr:4,c1:5,r1:5};
+let MODE='n',HL=false,DAMP='g2',lastKnob='lsc';
+const KN={g1:['c1','r1'],g2:['lsc','hsc','lsr','hsr']},KNAME={c1:'压缩旋钮',r1:'回弹旋钮',lsc:'LSC',hsc:'HSC',lsr:'LSR',hsr:'HSR'},DN={g1:'GRIP',g2:'GRIP2'};
+const M=()=>(P.w+16)*0.4;
+const pp=x=>{const L=320-TK*P.tok;return P.psi*Math.pow(L/Math.max(L-x*1000,8),G)};
+const pn=x=>P.psi*Math.pow(60/(60+x*1000),G);
+const Fs=x=>A*PSI*(pp(x)-pn(x));
+function D(){if(DAMP==='g1'){const crl=250+170*P.r1;return{cl:150+100*P.c1,kc:0.35,ch:60+35*P.c1,crl,kr:0.4,crh:crl*0.6}}return{cl:150+60*P.lsc,kc:0.25+0.05*P.hsc,ch:40+55*P.hsc,crl:250+90*P.lsr,kr:0.3+0.03*P.hsr,crh:150+120*P.hsr}}
+function FdP(v,d){if(v>=0)return v<=d.kc?d.cl*v:d.cl*d.kc+d.ch*(v-d.kc);const u=-v;return-(u<=d.kr?d.crl*u:d.crl*d.kr+d.crh*(u-d.kr))}
+function invReb(F,d){const Fk=d.crl*d.kr;return F<=Fk?F/d.crl:d.kr+(F-Fk)/d.crh}
+function sag(){let lo=0,hi=TR;const W=M()*g;for(let i=0;i<40;i++){const m=(lo+hi)/2;if(Fs(m)<W)lo=m;else hi=m}return lo}
+function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const RK=(()=>{const r=mulberry(7),b=[];let d=0.8;while(d<24){const L=0.35+r()*0.4,h=0.025+r()*0.055;b.push([d,L,h]);d+=L+0.05+r()*0.3}return b})();
+const ROAD={idle:t=>0,drop:t=>0,brake:t=>0,
+rocks:t=>{const d=5*t;if(d>20)return 0;for(const[s,L,h]of RK){if(d>=s&&d<s+L)return h*Math.sin(Math.PI*(d-s)/L)}return 0},
+edge:t=>{const d=6*t,a=1,r=0.2,h=0.12;if(d<a)return 0;if(d<a+r)return h*(1-Math.cos(Math.PI*(d-a)/r))/2;if(d<a+r+0.6)return h;return 0}};
+const brk=t=>{if(t<0.3||t>2)return 0;return Math.min(1,(t-0.3)/0.15,(2-t)/0.15)};
+const SCN={idle:'手动',rocks:'碎石路',edge:'方边冲击',drop:'落差落地',brake:'急刹点头'};
+const HINT={idle:'在左边的前叉图上按住并上下拖动，手动把前叉压下去；松手后看它怎么回弹、最后停在 sag 位置。拖得快和拖得慢，阻尼力曲线上的红点落在不同区域。',
+rocks:'连续中小石块，5 m/s。把回弹拧到最慢（GRIP 的回弹旋钮或 GRIP2 的 LSR 拉满）：前叉来不及伸回来，会越压越深，这就是“打包”（packing）。',
+edge:'以 6 m/s 撞上 12 cm 方边，轴速冲到约 5 m/s，高速压缩垫片被顶开，重点看“峰值冲击力”。GRIP 把压缩拧硬，这一下会很冲；GRIP2 可以只拧硬 LSC、HSC 保持软。',
+drop:'0.7 m 落差平地落地（车手已用腿吸收一部分），能量要在 200 mm 内吃完。把容积垫片减到 0 看会不会触底；GRIP2 也可以加 HSC 帮忙撑住。',
+brake:'急刹时重心前移，前叉缓慢下沉（点头），轴速很低，只有低速压缩在起作用。GRIP 靠唯一的压缩旋钮，GRIP2 靠 LSC，对比行程曲线下沉的快慢。'};
+const SNOTE={n:'正置：细内管在上随车架动，粗外管和拱桥在下跟着车轮跳。拱桥把左右腿锁在一起，扭转刚性好；油封在上方要靠飞溅润滑。',
+i:'倒置：粗外管在上随车架动，细内管在下跟着车轮跳，簧下更轻、前后刚性更好；油封在下方泡在油里更顺。但没有拱桥，左右扭转只能靠车轴撑，内管也更容易被石头打伤。压缩原理和曲线完全一样。'};
+const DNOTE={g1:'Fox GRIP：压缩和回弹各只有一个旋钮。压缩旋钮会把低速和高速一起调（整条曲线一起抬），拧硬能抗点头，过方边也跟着变硬。阻尼图里的灰带 = 你刚动的旋钮从最软到最硬的范围。',
+g2:'Fox GRIP2：压缩、回弹各分高速和低速，一共 4 个旋钮。LSC 只改绿色段的斜率，HSC 改橙色段；LSR/HSR 分别管慢回弹和深压后的快回弹。阻尼图里的灰带 = 你刚动的旋钮从最软到最硬的范围。'};
+let S={},speed=0.25,trace=[],run=[],ghost=null,COL={},fr=0;
+function reset(sc){if(S.sc&&S.sc!=='idle'&&run.length>30)ghost={pts:run,label:`上一次：${DN[S.dm]} · ${SCN[S.sc]} · 最大 ${Math.round(Math.min(S.maxX,TR)*1000)} mm · 峰值 ${Math.round(S.maxF)} N`};run=[];
+const s0=sag();S={t:S.t||0,t0:S.t||0,st:0,sc,dm:DAMP,bot:0,maxX:0,maxF:0,x:s0,px:s0,yb:-s0,vb:0,xd:0,contact:true,bt:false,drag:false};if(sc==='drop'){S.x=0;S.px=0;S.yb=0.3;S.vb=-Math.sqrt(2*g*(H-0.3));S.contact=false}}
+function step(dt){const d=D(),y=ROAD[S.sc],yr=y(S.st),vr=(y(S.st+1e-4)-y(S.st-1e-4))/2e-4,m=M();const Fb=S.sc==='brake'?brk(S.st)*0.9*m*g:0;
+const xc=yr-S.yb,xf=Math.max(0,S.x-invReb(Fs(S.x),d)*dt);let F=0;
+if(xc>=xf){S.contact=true;const xd=vr-S.vb;F=Fs(Math.min(xc,TR))+FdP(xd,d);if(xc>TR)F+=4e5*(xc-TR)+4000*Math.max(xd,0);F=Math.max(0,F);
+if(xc>TR-0.002&&!S.bt){S.bot++;S.bt=true}if(xc<TR-0.01)S.bt=false;S.xd=xd;S.x=xc}else{S.contact=false;S.xd=(xf-S.x)/dt;S.x=xf}
+S.vb+=(F-m*g-Fb)/m*dt;S.yb+=S.vb*dt;S.st+=dt;S.t+=dt;S.maxX=Math.max(S.maxX,S.x);if(S.sc!=='idle')S.maxF=Math.max(S.maxF,F)}
+function circuit(){const d=D(),v=S.xd,g2=DAMP==='g2',gy='#888780',pk='#D4537E';
+if(S.drag&&Math.abs(v)<0.03)return['手按住 · 仅弹簧支撑',gy];
+if(!S.contact&&S.x>0.001)return[(g2?(-v>d.kr?'高速回弹 HSR':'低速回弹 LSR'):'回弹（单旋钮）')+' · 车轮离地伸展',pk];
+if(!S.contact)return['腾空 · 前叉完全伸展',gy];
+if(v>d.kc)return[g2?'高速压缩 HSC（垫片被顶开）':'高速压缩（垫片被顶开，GRIP 不能单独调）','#D85A30'];
+if(v>0.03)return[g2?'低速压缩 LSC':'低速压缩（GRIP 压缩旋钮主要管这里）','#1D9E75'];
+if(v<-0.03)return[g2?(-v>d.kr?'高速回弹 HSR':'低速回弹 LSR'):'回弹（单旋钮）',pk];
+return['静止 · 仅弹簧支撑',gy]}
+function drawTokens(){const g0=$('tk');g0.innerHTML='';for(let i=0;i<P.tok;i++){const r=document.createElementNS('http://www.w3.org/2000/svg','rect');r.setAttribute('x',45);r.setAttribute('width',30);r.setAttribute('y',37+i*TK*PX+1);r.setAttribute('height',TK*PX-2);r.setAttribute('rx',2);r.setAttribute('fill','#7F77DD');g0.appendChild(r)}}
+function applyMode(){const n=MODE==='n';$('upA').setAttribute('display',n?'inline':'none');$('fixN').setAttribute('display',n?'inline':'none');$('upI').setAttribute('display',n?'none':'inline');$('fixI').setAttribute('display',n?'none':'inline');
+document.querySelectorAll('[data-m]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===MODE));$('snote').textContent=SNOTE[MODE];applyHL()}
+function applyHL(){document.querySelectorAll('#fork .us').forEach(e=>{if(e.tagName==='path')e.setAttribute('stroke',HL?'#639922':'#888780');else{e.setAttribute('fill',HL?'#639922':'#888780');e.setAttribute('fill-opacity',HL?0.45:e.dataset.op)}})}
+function applyDamp(){$('g1box').style.display=DAMP==='g1'?'grid':'none';$('g2box').style.display=DAMP==='g2'?'grid':'none';$('dnote').textContent=DNOTE[DAMP];lastKnob=KN[DAMP][0];document.querySelectorAll('[data-d]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.d===DAMP))}
+function drawFork(){const x=Math.min(S.x,TR),s=x*1000*PX;for(const id of['upA','upC','upI'])$(id).setAttribute('transform',`translate(0 ${s})`);const top=37+s+P.tok*TK*PX;$('pos').setAttribute('y',top);$('pos').setAttribute('height',Math.max(0,277-top));
+$('pos').setAttribute('fill-opacity',Math.min(0.85,0.18+0.28*Math.log2(pp(x)/P.psi+1)));$('neg').setAttribute('height',13+s);$('neg').setAttribute('fill-opacity',0.08+0.4*pn(x)/P.psi);
+const v=S.xd,comp=S.contact&&v>0.03,k=D().kc,b=comp&&v>k?Math.min(7,(v-k)*3+1.5):0;
+$('shim').setAttribute('d',`M167 ${53-b} Q173 53 180 53 Q187 53 193 ${53-b}`);$('lsc').setAttribute('opacity',comp?1:0.12);$('hsc').setAttribute('opacity',b>0?1:0.1);$('rb').setAttribute('opacity',v<-0.03?1:0.1)}
+function cols(){const cs=getComputedStyle(document.body);COL={t:cs.getPropertyValue('--text-secondary').trim()||'#888',b:cs.getPropertyValue('--border').trim()||'rgba(128,128,128,.3)',f:(cs.getPropertyValue('--font-sans').trim()||'sans-serif')}}
+const cvs={};
+function fit(id){const c=$(id),r=c.getBoundingClientRect(),d=window.devicePixelRatio||1;c.width=Math.round(r.width*d);c.height=Math.round(r.height*d);const ctx=c.getContext('2d');ctx.setTransform(d,0,0,d,0,0);cvs[id]={ctx,w:r.width,h:r.height}}
+function fitAll(){['cSp','cDa','cTr'].forEach(fit)}
+function ax(ctx,w,h,pad,xs,ys,X,Y,xl,yl){ctx.font='11px '+COL.f;ctx.lineWidth=1;ctx.strokeStyle=COL.b;ctx.fillStyle=COL.t;ctx.setLineDash([]);
+ctx.textAlign='center';ctx.textBaseline='top';for(const v of xs){const x=X(v);ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,h-pad.b);ctx.stroke();ctx.fillText(v,x,h-pad.b+3)}
+ctx.textAlign='right';ctx.textBaseline='middle';for(const v of ys){const y=Y(v);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillText(v,pad.l-4,y)}
+ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText(yl,2,1);ctx.textAlign='right';ctx.textBaseline='bottom';ctx.fillText(xl,w-pad.r-2,h-pad.b-2)}
+function leg(ctx,x,items){ctx.font='11px '+COL.f;ctx.textBaseline='top';ctx.textAlign='left';for(const[t,c,d]of items){ctx.strokeStyle=c;ctx.lineWidth=2;ctx.setLineDash(d?[4,3]:[]);ctx.beginPath();ctx.moveTo(x,7);ctx.lineTo(x+14,7);ctx.stroke();ctx.fillStyle=COL.t;ctx.fillText(t,x+18,1);x+=ctx.measureText(t).width+30}ctx.setLineDash([])}
+function dot(ctx,x,y){ctx.fillStyle='#D85A30';ctx.beginPath();ctx.arc(x,y,5,0,7);ctx.fill()}
+function drawSp(){const c=cvs.cSp;if(!c)return;const{ctx,w,h}=c;ctx.clearRect(0,0,w,h);const pad={l:44,r:10,t:18,b:16};
+const ym=Math.min(6000,Math.max(1500,Math.ceil(Fs(TR)*1.1/500)*500));const X=v=>pad.l+v/200*(w-pad.l-pad.r),Y=f=>pad.t+(1-Math.min(f,ym)/ym)*(h-pad.t-pad.b);
+ax(ctx,w,h,pad,[0,50,100,150,200],[0,ym/2,ym],X,Y,'行程 mm','弹簧力 N');
+const W=M()*g,s0=sag(),k=W/s0,xe=Math.min(TR,ym/k);ctx.setLineDash([2,3]);ctx.strokeStyle=COL.t;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,Y(W));ctx.lineTo(w-pad.r,Y(W));ctx.stroke();ctx.fillStyle=COL.t;ctx.textAlign='right';ctx.textBaseline='bottom';ctx.fillText('静载 '+Math.round(W)+' N',w-pad.r-2,Y(W)-2);
+ctx.setLineDash([4,3]);ctx.strokeStyle='#888780';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(xe*1000),Y(k*xe));ctx.stroke();ctx.setLineDash([]);
+ctx.strokeStyle='#378ADD';ctx.lineWidth=2;ctx.beginPath();for(let i=0;i<=100;i++){const x=i*0.002;i?ctx.lineTo(X(x*1000),Y(Fs(x))):ctx.moveTo(X(0),Y(0))}ctx.stroke();
+const xx=Math.min(S.x,TR);dot(ctx,X(xx*1000),Y(Fs(xx)));leg(ctx,110,[['空气弹簧','#378ADD'],['同 sag 的线性钢圈弹簧','#888780',1]])}
+function band(){const k=lastKnob;if(!KN[DAMP].includes(k))return null;const el=$('s-'+k),o=P[k];P[k]=+el.min;const lo=D();P[k]=+el.max;const hi=D();P[k]=o;return{lo,hi,k}}
+function drawDa(){const c=cvs.cDa;if(!c)return;const{ctx,w,h}=c;ctx.clearRect(0,0,w,h);const pad={l:44,r:10,t:18,b:16},v0=-2.5,v1=5,d=D(),bd=band();
+let fm=Math.max(Math.abs(FdP(v1,d)),Math.abs(FdP(v0,d)));if(bd)fm=Math.max(fm,Math.abs(FdP(v1,bd.hi)),Math.abs(FdP(v0,bd.hi)));const ym=Math.ceil(fm*1.08/500)*500;
+const X=v=>pad.l+(v-v0)/(v1-v0)*(w-pad.l-pad.r),Y=f=>pad.t+(1-(Math.max(-ym,Math.min(ym,f))+ym)/(2*ym))*(h-pad.t-pad.b);
+ax(ctx,w,h,pad,[-2,-1,0,1,2,3,4,5],[-ym,0,ym],X,Y,'轴速 m/s（正 = 压缩）','阻尼力 N');
+if(bd){ctx.fillStyle='rgba(136,135,128,0.22)';ctx.beginPath();for(let i=0;i<=80;i++){const v=v0+(v1-v0)*i/80;i?ctx.lineTo(X(v),Y(FdP(v,bd.lo))):ctx.moveTo(X(v),Y(FdP(v,bd.lo)))}for(let i=80;i>=0;i--){const v=v0+(v1-v0)*i/80;ctx.lineTo(X(v),Y(FdP(v,bd.hi)))}ctx.closePath();ctx.fill();
+ctx.fillStyle=COL.t;ctx.font='11px '+COL.f;ctx.textAlign='left';ctx.textBaseline='bottom';ctx.fillText('灰带 = '+KNAME[bd.k]+' 调节范围',pad.l+4,h-pad.b-2)}
+ctx.setLineDash([2,3]);ctx.strokeStyle=COL.t;ctx.lineWidth=1;for(const kv of DAMP==='g2'?[d.kc,-d.kr]:[d.kc]){ctx.beginPath();ctx.moveTo(X(kv),pad.t);ctx.lineTo(X(kv),h-pad.b);ctx.stroke()}ctx.setLineDash([]);
+const seg=(a,b,col)=>{ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.beginPath();for(let i=0;i<=40;i++){const v=a+(b-a)*i/40;i?ctx.lineTo(X(v),Y(FdP(v,d))):ctx.moveTo(X(v),Y(FdP(v,d)))}ctx.stroke()};
+seg(v0,0,'#D4537E');seg(0,d.kc,'#1D9E75');seg(d.kc,v1,'#D85A30');
+const v=Math.max(v0,Math.min(v1,S.xd));dot(ctx,X(v),Y(FdP(v,d)));leg(ctx,110,DAMP==='g2'?[['回弹 LSR/HSR','#D4537E'],['LSC','#1D9E75'],['HSC','#D85A30']]:[['回弹','#D4537E'],['低速压缩','#1D9E75'],['高速压缩','#D85A30']])}
+function drawTr(){const c=cvs.cTr;if(!c)return;const{ctx,w,h}=c;ctx.clearRect(0,0,w,h);const pad={l:44,r:10,t:18,b:8},t1=S.t,t0=t1-4;
+const X=t=>pad.l+(t-t0)/4*(w-pad.l-pad.r),Y=mm=>pad.t+mm/200*(h-pad.t-pad.b);ax(ctx,w,h,pad,[],[0,100,200],X,Y,'','行程 mm · 最近 4 秒');
+const s0=sag()*1000;ctx.setLineDash([2,3]);ctx.strokeStyle=COL.t;ctx.beginPath();ctx.moveTo(pad.l,Y(s0));ctx.lineTo(w-pad.r,Y(s0));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=COL.t;ctx.textAlign='right';ctx.textBaseline='bottom';ctx.fillText('sag',w-pad.r-2,Y(s0)-1);
+ctx.strokeStyle='#E24B4A';ctx.beginPath();ctx.moveTo(pad.l,Y(200));ctx.lineTo(w-pad.r,Y(200));ctx.stroke();ctx.fillStyle='#E24B4A';ctx.fillText('触底',w-pad.r-2,Y(200)-1);
+ctx.save();ctx.beginPath();ctx.rect(pad.l,0,w-pad.l-pad.r,h);ctx.clip();
+if(ghost&&S.sc!=='idle'){ctx.strokeStyle='#B4B2A9';ctx.lineWidth=2;ctx.beginPath();let f=1;for(const[st,x]of ghost.pts){const t=S.t0+st;if(t<t0||t>t1+0.001)continue;const px=X(t),py=Y(Math.min(x,200));f?ctx.moveTo(px,py):ctx.lineTo(px,py);f=0}ctx.stroke()}
+ctx.strokeStyle='#7F77DD';ctx.lineWidth=2;ctx.beginPath();let f=1;for(const[t,x]of trace){if(t<t0)continue;const px=X(t),py=Y(Math.min(x,200));f?ctx.moveTo(px,py):ctx.lineTo(px,py);f=0}ctx.stroke();ctx.restore();
+if(ghost){ctx.font='11px '+COL.f;ctx.fillStyle=COL.t;ctx.textAlign='right';ctx.textBaseline='top';ctx.fillText('灰线 '+ghost.label,w-pad.r,1)}}
+function readouts(){const mm=Math.min(S.x,TR)*1000;$('mX').textContent=Math.round(mm)+' mm';$('mP').textContent=Math.round(pp(Math.min(S.x,TR)))+' psi';$('mV').textContent=S.xd.toFixed(2)+' m/s';$('mF').textContent=S.sc==='idle'?'—':Math.round(S.maxF)+' N';
+$('mMax').textContent=Math.round(Math.min(S.maxX,TR)*1000)+' / '+S.bot+' 次';$('mMax').style.color=S.bot?'var(--text-danger)':'';const[t,cc]=circuit();$('circ').textContent=t;$('cdot').style.background=cc}
+function updSag(){const s=sag()*1000,p=s/2;const el=$('sag');el.textContent=Math.round(s)+' mm（'+Math.round(p)+'%）'+(p<15?'· 偏硬，建议 15–20%':p>22?'· 偏软，建议 15–20%':'· 在速降常用的 15–20% 范围内');el.style.color=p<15||p>22?'var(--text-warning)':'var(--text-success)'}
+const fmt={w:v=>v+' kg',psi:v=>v+' psi',tok:v=>v+' 个'};
+function setActive(sc){document.querySelectorAll('[data-s]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.s===sc));$('hint').textContent=HINT[sc]}
+let last=performance.now();
+function frame(now){const dt=Math.min(0.05,(now-last)/1000);last=now;
+if(S.drag){const raw=(S.x-S.px)/Math.max(dt,1e-3);S.xd=0.6*S.xd+0.4*raw;S.px=S.x;S.t+=dt;S.contact=true;S.maxX=Math.max(S.maxX,S.x)}
+else{const sim=dt*speed,n=Math.max(1,Math.ceil(sim/0.0004)),hh=sim/n;for(let i=0;i<n;i++)step(hh);S.px=S.x}
+trace.push([S.t,S.x*1000]);while(trace.length&&trace[0][0]<S.t-4.2)trace.shift();if(S.sc!=='idle'&&S.st<4.2)run.push([S.st,S.x*1000]);
+if(fr++%60===0)cols();drawFork();drawSp();drawDa();drawTr();readouts();requestAnimationFrame(frame)}
+for(const k in P){const el=$('s-'+k);el.value=P[k];const u=()=>{P[k]=+el.value;$('o-'+k).textContent=fmt[k]?fmt[k](P[k]):P[k]+' 格';if(k==='tok')drawTokens();if(KN.g1.includes(k)||KN.g2.includes(k))lastKnob=k;updSag()};el.addEventListener('input',u);u()}
+lastKnob='lsc';
+document.querySelectorAll('[data-s]').forEach(b=>b.addEventListener('click',()=>{reset(b.dataset.s);setActive(b.dataset.s)}));
+document.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{MODE=b.dataset.m;applyMode()}));
+document.querySelectorAll('[data-d]').forEach(b=>b.addEventListener('click',()=>{DAMP=b.dataset.d;S.dm=DAMP;applyDamp()}));
+$('hl').addEventListener('change',e=>{HL=e.target.checked;applyHL()});
+$('spd').addEventListener('click',()=>{speed=speed===1?0.25:1;$('spd').innerHTML='<i class="ti ti-clock" aria-hidden="true"></i> '+(speed===1?'正常速度 1x':'慢放 0.25x')});
+const svg=$('fork');let dy0=0,dx0=0;
+svg.addEventListener('pointerdown',e=>{svg.setPointerCapture(e.pointerId);if(S.sc!=='idle'){reset('idle');setActive('idle')}S.drag=true;S.maxX=S.x;S.bot=0;dy0=e.clientY;dx0=S.x});
+svg.addEventListener('pointermove',e=>{if(!S.drag)return;const sc=470/svg.getBoundingClientRect().height;S.x=Math.max(0,Math.min(TR,dx0+(e.clientY-dy0)*sc/PX/1000))});
+const end=()=>{if(!S.drag)return;S.drag=false;S.yb=-S.x;S.vb=0;S.st=0};
+svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',end);
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',cols);
+cols();reset('idle');setActive('idle');applyMode();applyDamp();fitAll();new ResizeObserver(fitAll).observe($('charts'));requestAnimationFrame(frame);
+</script>
+</body>
+</html>
