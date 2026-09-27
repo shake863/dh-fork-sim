@@ -9,7 +9,10 @@
 
 简化物理模型，数值只用来说明趋势，不对应任何具体型号的实测数据。
 
-在线访问：https://shake863.github.io/dh-fork-sim/
+在线访问：
+
+- 前叉原理：https://shake863.github.io/dh-fork-sim/
+- Santa Cruz 速降整车（前后悬挂联动、VPP 连杆）：https://shake863.github.io/dh-fork-sim/bike.html
 
 - 学习笔记：[docs/knowledge.md](docs/knowledge.md)
 - 开发记录：[docs/devlog.md](docs/devlog.md)
