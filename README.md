@@ -8,3 +8,8 @@
 - 地形：手动按压、碎石路、方边冲击、落差落地、急刹点头
 
 简化物理模型，数值只用来说明趋势，不对应任何具体型号的实测数据。
+
+在线访问：https://shake863.github.io/dh-fork-sim/
+
+- 学习笔记：[docs/knowledge.md](docs/knowledge.md)
+- 开发记录：[docs/devlog.md](docs/devlog.md)
